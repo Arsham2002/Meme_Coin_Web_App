@@ -11,7 +11,7 @@ public class User
 	public decimal Balance { set; get; }
 
 	// foreign keys
-	public List<Transfer> Transfers { set; get; }
-	public List<Fund> Funds { set; get; }
-	public List<Message> Messages { set; get; }
+	public List<Transfer>? Transfers { set; get; }
+	public List<Fund>? Funds { set; get; }
+	public List<Message>? Messages { set; get; }
 }

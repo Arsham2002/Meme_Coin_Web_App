@@ -13,5 +13,5 @@ public class Transfer
 
 	// foreign keys
 	public int UserId { set; get; }
-	public User User { set; get; }
+	public User? User { set; get; }
 }

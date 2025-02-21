@@ -2,12 +2,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace memeCoinWebApp.Models;
 
-public class Fund
+public class Message
 {
 	[Key]
 	public int Id { set; get; }
-	public int Amount { set; get; }
-	public DateTime Timestamp { set; get; }
+	public string Sender { set; get; }
+	public string Content { set; get; }
 
 	// foreign keys
 	public int UserId { set; get; }

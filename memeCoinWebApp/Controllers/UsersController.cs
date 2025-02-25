@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MvcUser.Data;
+using memeCoinWebApp.Data;
 using memeCoinWebApp.Models;
 
 namespace memeCoinWebApp.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly MvcUserContext _context;
+        private readonly ComContext _context;
 
-        public UsersController(MvcUserContext context)
+        public UsersController(ComContext context)
         {
             _context = context;
         }

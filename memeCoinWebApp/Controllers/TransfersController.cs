@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MvcTransfer.Data;
+using memeCoinWebApp.Data;
 using memeCoinWebApp.Models;
 
 namespace memeCoinWebApp.Controllers
 {
     public class TransfersController : Controller
     {
-        private readonly MvcTransferContext _context;
+        private readonly ComContext _context;
 
-        public TransfersController(MvcTransferContext context)
+        public TransfersController(ComContext context)
         {
             _context = context;
         }

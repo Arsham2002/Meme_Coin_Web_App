@@ -9,6 +9,7 @@ public class Message
     public string Sender { set; get; }
     public string Content { set; get; }
     public bool Seen { set; get; }
+    public DateTime Timestamp { set; get; }
     // foreign keys
     public int UserId { set; get; }
     public User? User { set; get; }

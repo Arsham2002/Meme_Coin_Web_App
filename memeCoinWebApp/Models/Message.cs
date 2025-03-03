@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace memeCoinWebApp.Models;
 
@@ -11,6 +12,7 @@ public class Message
     public bool Seen { set; get; }
     public DateTime Timestamp { set; get; }
     // foreign keys
-    public int UserId { set; get; }
+    [ForeignKey("UserPhoneNumber")]
+    public string UserPhoneNumber { set; get; }
     public User? User { set; get; }
 }

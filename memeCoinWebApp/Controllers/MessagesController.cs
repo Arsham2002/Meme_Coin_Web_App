@@ -20,15 +20,15 @@ namespace memeCoinWebApp.Controllers
         }
 
         // GET: Messages
-        public async Task<IActionResult> Index(int? id)
+        public async Task<IActionResult> Index(string? phoneNumber)
         {
-            if (id == null)
+            if (phoneNumber == null)
             {
                 return NotFound();
             }
 
             var chats = await _context.Message
-                .Where(m => m.UserId == id)
+                .Where(m => m.UserPhoneNumber == phoneNumber)
                 .GroupBy(m => m.Sender)
                 .Select(g => g.OrderByDescending(m => m.Timestamp).FirstOrDefault())
                 .ToListAsync();
@@ -40,21 +40,25 @@ namespace memeCoinWebApp.Controllers
         }
 
         // GET: Messages/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string? phoneNumber, string? senderPhoneNumber)
         {
-            if (id == null)
+            if (phoneNumber == null || senderPhoneNumber == null)
             {
                 return NotFound();
             }
 
-            var message = await _context.Message
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (message == null)
+            var messages = await _context.Message
+                .Where(m => (m.UserPhoneNumber == phoneNumber && m.Sender == senderPhoneNumber)
+                            || (m.UserPhoneNumber == senderPhoneNumber && m.Sender == phoneNumber))
+                .OrderBy(m => m.Timestamp)
+                .ToListAsync();
+            if (messages == null)
             {
                 return NotFound();
             }
-
-            return View(message);
+            ViewData["Self"] = phoneNumber;
+            ViewData["Sender"] = senderPhoneNumber;
+            return View(messages);
         }
 
         // GET: Messages/Create
@@ -66,7 +70,7 @@ namespace memeCoinWebApp.Controllers
         // POST: Messages/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Sender,Content,Seen,Timestamp,UserId")] Message message)
+        public async Task<IActionResult> Create([Bind("Id,Sender,Content,Seen,Timestamp,UserPhoneNumber")] Message message)
         {
             if (ModelState.IsValid)
             {

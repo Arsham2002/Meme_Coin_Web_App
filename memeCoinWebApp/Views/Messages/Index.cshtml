@@ -4,11 +4,8 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Your chats</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -16,10 +13,7 @@
                 @Html.DisplayNameFor(model => model.Sender)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserPhoneNumber)
+                Unread message(s)
             </th>
             <th></th>
         </tr>
@@ -30,16 +24,18 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Sender)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
+        @if (!item.Seen)
+        {
+            <td class="text-danger">
+                *
             </td>
+        }
+        else
+        {
+            <td></td>
+        }
             <td>
-                @Html.DisplayFor(modelItem => item.UserPhoneNumber)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Details" asp-route-id="@item.Id">Open chat</a>
             </td>
         </tr>
 }

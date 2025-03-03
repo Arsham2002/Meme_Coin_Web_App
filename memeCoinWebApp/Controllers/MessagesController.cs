@@ -20,9 +20,23 @@ namespace memeCoinWebApp.Controllers
         }
 
         // GET: Messages
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            return View(await _context.Message.ToListAsync());
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var chats = await _context.Message
+                .Where(m => m.UserId == id)
+                .GroupBy(m => m.Sender)
+                .Select(g => g.OrderByDescending(m => m.Timestamp).FirstOrDefault())
+                .ToListAsync();
+            if (chats == null)
+            {
+                return NotFound();
+            }
+            return View(chats);
         }
 
         // GET: Messages/Details/5
@@ -50,11 +64,9 @@ namespace memeCoinWebApp.Controllers
         }
 
         // POST: Messages/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Sender,Content,UserId")] Message message)
+        public async Task<IActionResult> Create([Bind("Id,Sender,Content,Seen,Timestamp,UserId")] Message message)
         {
             if (ModelState.IsValid)
             {

@@ -4,6 +4,18 @@
     ViewData["Title"] = "Index";
 }
 
+<form asp-action="Details" asp-route-phoneNumber="@Model.First().UserPhoneNumber" class="row align-items-center">
+    <div class="col-auto">
+        <label class="control-label">Start chat with:</label>
+    </div>
+    <div class="col-auto">
+        <input name="senderPhoneNumber" class="form-control" />
+    </div>
+    <div class="col-auto">
+        <input type="submit" value="Start" class="btn btn-primary" />
+    </div>
+</form>
+
 <h1>Your chats</h1>
 
 <table class="table">
@@ -35,7 +47,7 @@
             <td></td>
         }
             <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Open chat</a>
+                <a asp-action="Details" asp-route-phoneNumber="@item.UserPhoneNumber" asp-route-senderPhoneNumber="@item.Sender">Open chat</a>
             </td>
         </tr>
 }

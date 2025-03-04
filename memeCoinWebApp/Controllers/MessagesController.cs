@@ -24,7 +24,24 @@ namespace memeCoinWebApp.Controllers
         {
             if (phoneNumber == null)
             {
-                return NotFound();
+                Message m1 = new Message();
+                m1.Id = 1;
+                m1.Sender = "1";
+                m1.Content = "Hello!";
+                m1.Seen = true;
+                m1.Timestamp = DateTime.Now;
+                m1.UserPhoneNumber = "2";
+                Message m2 = new Message();
+                m2.Id = 2;
+                m2.Sender = "2";
+                m2.Content = "Hello back!";
+                m2.Seen = true;
+                m2.Timestamp = DateTime.Now;
+                m2.UserPhoneNumber = "1";
+                List<Message> l = new List<Message>();
+                l.Add(m1);
+                l.Add(m2);
+                return View(l); // NotFound();
             }
 
             var chats = await _context.Message
@@ -70,15 +87,19 @@ namespace memeCoinWebApp.Controllers
         // POST: Messages/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Sender,Content,Seen,Timestamp,UserPhoneNumber")] Message message)
+        public async Task<IActionResult> Create(string content, string sender, string recipient)
         {
-            if (ModelState.IsValid)
+            Message newMessage = new Message
             {
-                _context.Add(message);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(message);
+                Sender = sender,
+                Content = content,
+                Seen = false,
+                Timestamp = DateTime.Now,
+                UserPhoneNumber = recipient
+            };
+            _context.Add(newMessage);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { phoneNumber = recipient, senderPhoneNumber = sender });
         }
 
         private bool MessageExists(int id)

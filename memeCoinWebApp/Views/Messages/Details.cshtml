@@ -18,5 +18,13 @@
             </div>
         </div>
     }
-    <a asp-action="Index" asp-route-id="@ViewData["Self"]">Back to List</a>
 </div>
+<form asp-action="Create" method="post" asp-route-sender="@ViewData["Self"]" asp-route-recipient="@ViewData["Sender"]" class="row align-items-center">
+    <div class="col-auto">
+        <input name="content" class="form-control" />
+    </div>
+    <div class="col-auto">
+        <input type="submit" value="Send" class="btn btn-primary" />
+    </div>
+</form>
+<a asp-action="Index" asp-route-id="@ViewData["Self"]">Back to Chats</a>

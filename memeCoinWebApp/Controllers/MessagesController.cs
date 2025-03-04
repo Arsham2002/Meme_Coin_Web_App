@@ -24,24 +24,7 @@ namespace memeCoinWebApp.Controllers
         {
             if (phoneNumber == null)
             {
-                Message m1 = new Message();
-                m1.Id = 1;
-                m1.Sender = "1";
-                m1.Content = "Hello!";
-                m1.Seen = true;
-                m1.Timestamp = DateTime.Now;
-                m1.UserPhoneNumber = "2";
-                Message m2 = new Message();
-                m2.Id = 2;
-                m2.Sender = "2";
-                m2.Content = "Hello back!";
-                m2.Seen = true;
-                m2.Timestamp = DateTime.Now;
-                m2.UserPhoneNumber = "1";
-                List<Message> l = new List<Message>();
-                l.Add(m1);
-                l.Add(m2);
-                return View(l); // NotFound();
+                return NotFound();
             }
 
             var chats = await _context.Message

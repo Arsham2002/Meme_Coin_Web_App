@@ -32,32 +32,31 @@ namespace memeCoinWebApp.Controllers
                 .GroupBy(m => m.Sender)
                 .Select(g => g.OrderByDescending(m => m.Timestamp).FirstOrDefault())
                 .ToListAsync();
-            if (chats == null)
-            {
-                return NotFound();
-            }
+            TempData["PhoneNumber"] = phoneNumber;
             return View(chats);
         }
 
-        // GET: Messages/Details/5
         public async Task<IActionResult> Details(string? phoneNumber, string? senderPhoneNumber)
         {
             if (phoneNumber == null || senderPhoneNumber == null)
             {
                 return NotFound();
             }
-
             var messages = await _context.Message
                 .Where(m => (m.UserPhoneNumber == phoneNumber && m.Sender == senderPhoneNumber)
                             || (m.UserPhoneNumber == senderPhoneNumber && m.Sender == phoneNumber))
                 .OrderBy(m => m.Timestamp)
                 .ToListAsync();
-            if (messages == null)
-            {
-                return NotFound();
-            }
-            ViewData["Self"] = phoneNumber;
             ViewData["Sender"] = senderPhoneNumber;
+            TempData["PhoneNumber"] = phoneNumber;
+            var notSeen = await _context.Message
+                .Where(m => m.UserPhoneNumber == phoneNumber && m.Sender == senderPhoneNumber && m.Seen == false)
+                .ToListAsync();
+            foreach (var message in notSeen)
+            {
+                message.Seen = true;
+            }
+            await _context.SaveChangesAsync();
             return View(messages);
         }
 
@@ -82,7 +81,7 @@ namespace memeCoinWebApp.Controllers
             };
             _context.Add(newMessage);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Details), new { phoneNumber = recipient, senderPhoneNumber = sender });
+            return RedirectToAction(nameof(Details), new { phoneNumber = sender, senderPhoneNumber = recipient });
         }
 
         private bool MessageExists(int id)

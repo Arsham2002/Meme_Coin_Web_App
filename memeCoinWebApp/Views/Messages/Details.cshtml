@@ -19,12 +19,8 @@
         </div>
     }
 </div>
-<form asp-action="Create" method="post" asp-route-sender="@ViewData["Self"]" asp-route-recipient="@ViewData["Sender"]" class="row align-items-center">
-    <div class="col-auto">
-        <input name="content" class="form-control" />
-    </div>
-    <div class="col-auto">
-        <input type="submit" value="Send" class="btn btn-primary" />
-    </div>
+<form asp-action="Create" method="post" asp-route-sender="@TempData["PhoneNumber"]" asp-route-recipient="@ViewData["Sender"]">
+    <input name="content" class="form-control mt-3 mb-2" placeholder="New message" />
+    <input type="submit" value="Send" class="btn btn-primary mb-3" />
 </form>
-<a asp-action="Index" asp-route-id="@ViewData["Self"]">Back to Chats</a>
+<a asp-action="Index" asp-route-phoneNumber="@TempData["PhoneNumber"]">Back to Chats</a>

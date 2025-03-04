@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<form asp-action="Details" asp-route-phoneNumber="@Model.First().UserPhoneNumber" class="row align-items-center">
+<form asp-action="Details" asp-route-phoneNumber="@TempData["PhoneNumber"]" class="row align-items-center">
     <div class="col-auto">
         <label class="control-label">Start chat with:</label>
     </div>

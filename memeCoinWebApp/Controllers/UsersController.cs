@@ -81,6 +81,7 @@ namespace memeCoinWebApp.Controllers
             {
                 return NotFound();
             }
+<<<<<<< HEAD
             TempData["PhoneNumber"] = phoneNumber;
             return View(user);
         }
@@ -117,6 +118,43 @@ namespace memeCoinWebApp.Controllers
         public IActionResult Login(string? phoneNumber)
         {
             TempData["PhoneNumber"] = phoneNumber;
+=======
+            
+            return View(user);
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([Bind("Password")] User user)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(user);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(user.PhoneNumber))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                TempData["PhoneNumber"] = user.PhoneNumber;
+                return RedirectToAction(nameof(Index));
+            }
+            return View(user);
+        }
+        [HttpGet]
+        public IActionResult Login(string Message)
+        {
+            ViewData["Message"] = Message;
+>>>>>>> f6abde9 (Implement HomeController.cs and UIs)
 
             return View();
         }
@@ -129,7 +167,11 @@ namespace memeCoinWebApp.Controllers
             if (user != null)
             {
                 TempData["PhoneNumber"] = phonenumber;
+<<<<<<< HEAD
                 return RedirectToAction("Index", "Home"); //Goto User Homepage
+=======
+                return RedirectToAction(nameof(Index), "Home"); //Goto User Homepage
+>>>>>>> f6abde9 (Implement HomeController.cs and UIs)
             }
             return View();
 

@@ -9,10 +9,10 @@ public class Transfer
     public int Id { set; get; }
     public string Source { set; get; }
     public string Destination { set; get; }
-    public int Amount { set; get; }
+    public decimal Amount { set; get; }
     public DateTime Timestamp { set; get; }
 
-    // foreign keys
+    // foreign keys 
     [ForeignKey("UserPhoneNumber")]
     public string UserPhoneNumber { set; get; }
     public User? User { set; get; }

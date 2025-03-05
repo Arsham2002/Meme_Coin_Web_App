@@ -19,12 +19,6 @@ namespace memeCoinWebApp.Controllers
             _context = context;
         }
 
-        // GET: Funds
-        public async Task<IActionResult> Index(string? phoneNumber) 
-        {
-            return View(await _context.Fund.ToListAsync());
-        }
-
         public async Task<IActionResult> IncreaseAmount(string? phoneNumber, int value)
         {
             if (phoneNumber == null)
@@ -53,10 +47,84 @@ namespace memeCoinWebApp.Controllers
 
             var last_value = find_user.Amount;
             ViewData["Amount"] = last_value + value;
-            ViewData.Timestamp = DateTime.Now;
+            // ViewData.Timestamp = DateTime.Now;
 
             return View(find_user);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> TransferMoney(string? SrcPhoneNumber, string? DestPhoneNumber, int value)
+        {
+            if (SrcPhoneNumber == null || DestPhoneNumber == null)
+            {
+                return NotFound("حساب‌ها نامعتبر است");
+            }
+    
+            var find_src = await _context.Fund
+            .Include(f => f.User)
+            .FirstOrDefaultAsync(f => f.User.PhoneNumber == SrcPhoneNumber);
+
+            
+            var find_dest = await _context.Fund
+            .Include(f => f.User)
+            .FirstOrDefaultAsync(f => f.User.PhoneNumber == DestPhoneNumber);
+
+            if (find_src.Amount < value)
+            {
+                return NotFound("موجودی کافی نیست");
+            }
+
+            find_src.Amount -= value;
+            find_dest.Amount += value;
+
+            return View(find_src);
+        }
+
+        public async Task<IActionResult> TransactionList(string? phoneNumber, DateTime? startDate, DateTime? endDate, int? startFee, int? endFee, string? senderName, string? receiverName)
+        {
+            if (string.IsNullOrEmpty(phoneNumber))
+            {
+                return NotFound("شماره تلفن وارد نشده است");
+            }
+
+            var transactions = _context.Transfer
+                .Where(t => t.Source == phoneNumber || t.Destination == phoneNumber)
+                .AsQueryable();
+
+            if (startDate.HasValue)
+                transactions = transactions.Where(t => t.Timestamp >= startDate.Value);
+
+            if (endDate.HasValue)
+                transactions = transactions.Where(t => t.Timestamp <= endDate.Value);
+
+            if (startFee.HasValue)
+                transactions = transactions.Where(t => t.Amount >= startFee.Value);
+
+            if (endFee.HasValue)
+                transactions = transactions.Where(t => t.Amount <= endFee.Value);
+
+            if (!string.IsNullOrEmpty(senderName))
+            {
+                var senderUsers = _context.User
+                    .Where(u => u.Password.Contains(senderName))
+                    .Select(u => u.PhoneNumber)
+                    .ToList();
+
+                transactions = transactions.Where(t => senderUsers.Contains(t.Source));
+            }
+
+            if (!string.IsNullOrEmpty(receiverName))
+            {
+                var receiverUsers = _context.User
+                    .Where(u => u.Password.Contains(receiverName))
+                    .Select(u => u.PhoneNumber)
+                    .ToList();
+
+                transactions = transactions.Where(t => receiverUsers.Contains(t.Destination));
+            }
+
+            var result = await transactions.ToListAsync();
+            return View(result);
+        }
     }
 }

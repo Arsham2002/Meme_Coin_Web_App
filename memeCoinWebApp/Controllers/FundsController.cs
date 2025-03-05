@@ -20,54 +20,43 @@ namespace memeCoinWebApp.Controllers
         }
 
         // GET: Funds
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? phoneNumber) 
         {
             return View(await _context.Fund.ToListAsync());
         }
 
-        // GET: Funds/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> IncreaseAmount(string? phoneNumber, int value)
         {
-            if (id == null)
+            if (phoneNumber == null)
+            {
+                Fund f1 = new Fund();
+                User u1 = new User();
+                u1.PhoneNumber = "2";
+                u1.Password = "1";
+                u1.Balance = 2;
+
+                f1.Id = 1;
+                f1.Amount = 2139;
+                f1.Timestamp = DateTime.Now;
+                f1.UserPhoneNumber = "2";
+
+            }
+
+            var find_user = await _context.Fund
+            .Include(f => f.User)
+            .FirstOrDefaultAsync(f => f.User.PhoneNumber == phoneNumber);
+
+            if (find_user == null)
             {
                 return NotFound();
             }
 
-            var fund = await _context.Fund
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (fund == null)
-            {
-                return NotFound();
-            }
+            var last_value = find_user.Amount;
+            ViewData["Amount"] = last_value + value;
+            ViewData.Timestamp = DateTime.Now;
 
-            return View(fund);
+            return View(find_user);
         }
 
-        // GET: Funds/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Funds/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Amount,Timestamp,UserId")] Fund fund)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(fund);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(fund);
-        }
-
-        private bool FundExists(int id)
-        {
-            return _context.Fund.Any(e => e.Id == id);
-        }
     }
 }

@@ -12,7 +12,7 @@ public class Transfer
     public decimal Amount { set; get; }
     public DateTime Timestamp { set; get; }
 
-    // foreign keys
+    // foreign keys 
     [ForeignKey("UserPhoneNumber")]
     public string UserPhoneNumber { set; get; }
     public User? User { set; get; }

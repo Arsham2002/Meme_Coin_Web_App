@@ -4,20 +4,17 @@
     ViewData["Title"] = "IncreaseAmount";
 }
 
-<h1>Details</h1>
-
 <h2 class="text-end">افزایش اعتبار</h2>
 <h3 class="text-end">موجودی فعلی:</h3>
 <div>@Html.DisplayFor(model => model.Amount, new { htmlAttributes = new { @class = "h4" } }) </div>
-<!-- <h3>مبلغ افزایش:</h3>- -->
 
 <form class="text-end" asp-action="IncreaseAmount" method="post">
     <input type="hidden" name="phoneNumber" value="@Model.User.PhoneNumber"/>
     <div class="form-group m-3">
-        <label for="formGroupExampleInput">مبلغ افزایش:</label>
+        <label for="value">مبلغ افزایش:</label>
         <input type="text" name="value" class="form-control text-end" id="value" placeholder="مبلغ به ریال" required>
     </div>
-    <button type="button" class="btn btn-primary">اعمال</button>
+    <button type="submit" class="btn btn-primary">اعمال</button>
     <button type="button" class="btn btn-primary">بازگشت</button>
 </form>
 

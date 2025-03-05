@@ -20,12 +20,6 @@ namespace memeCoinWebApp.Controllers
             _context = context;
         }
 
-        // GET: Users
-        public async Task<IActionResult> Index()
-        {
-            return RedirectToAction(nameof(Index), "Home");
-        }
-
         // GET: Users/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -45,8 +39,9 @@ namespace memeCoinWebApp.Controllers
         }
 
         // GET: Users/Create
-        public IActionResult Create()
+        public IActionResult Create(string? phoneNumber)
         {
+            TempData["PhoneNumber"] = phoneNumber;
             return View();
         }
 
@@ -68,7 +63,7 @@ namespace memeCoinWebApp.Controllers
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 TempData["PhoneNumber"] = model.PhoneNumber;
-                return RedirectToAction(nameof(Index), "Home");
+                return RedirectToAction("Index", "Home");
             }
             return View(model);
         }
@@ -86,13 +81,13 @@ namespace memeCoinWebApp.Controllers
             {
                 return NotFound();
             }
-            
+            TempData["PhoneNumber"] = phoneNumber;
             return View(user);
         }
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("Password")] User user)
+        public async Task<IActionResult> Edit([Bind("PhoneNumber,Password,Balance")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -113,14 +108,15 @@ namespace memeCoinWebApp.Controllers
                     }
                 }
                 TempData["PhoneNumber"] = user.PhoneNumber;
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
+            TempData["PhoneNumber"] = user.PhoneNumber;
             return View(user);
         }
         [HttpGet]
-        public IActionResult Login(string Message)
+        public IActionResult Login(string? phoneNumber)
         {
-            ViewData["Message"] = Message;
+            TempData["PhoneNumber"] = phoneNumber;
 
             return View();
         }
@@ -133,7 +129,7 @@ namespace memeCoinWebApp.Controllers
             if (user != null)
             {
                 TempData["PhoneNumber"] = phonenumber;
-                return RedirectToAction(nameof(Index), "Home"); //Goto User Homepage
+                return RedirectToAction("Index", "Home"); //Goto User Homepage
             }
             return View();
 

@@ -15,7 +15,7 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(string? PhoneNumber)
     {
         int a = _context.Fund.Count();
         int b = _context.Transfer.Count();
@@ -40,7 +40,10 @@ public class HomeController : Controller
         ViewData["CountLastWeek"]  = countLastWeek;
         ViewData["CountLastMonth"] = countLastMonth;
         ViewData["CountLastYear"]  = countLastYear;
-
+        if(PhoneNumber != null)
+        {
+            TempData["PhoneNumber"] = PhoneNumber;
+        }
         return View();
     }
 

@@ -24,7 +24,6 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Create">Register</a>
@@ -32,6 +31,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Login">Login</a>
                         </li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Edit" asp-route-phoneNumber="@TempData["PhoneNumber"]">Edit</a>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Messages" asp-action="Index" asp-route-phoneNumber="@TempData["PhoneNumber"]">Chat</a>
                         </li>

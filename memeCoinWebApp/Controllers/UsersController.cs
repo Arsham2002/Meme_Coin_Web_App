@@ -23,7 +23,7 @@ namespace memeCoinWebApp.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.User.ToListAsync());
+            return RedirectToAction(nameof(Index), "Home");
         }
 
         // GET: Users/Details/5
@@ -74,21 +74,49 @@ namespace memeCoinWebApp.Controllers
         }
 
         // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string? phoneNumber)
         {
-            if (id == null)
+            if (phoneNumber == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.User.FindAsync(id);
+            var user = await _context.User.FindAsync(phoneNumber);
             if (user == null)
             {
                 return NotFound();
             }
+            
             return View(user);
         }
-
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([Bind("Password")] User user)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(user);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(user.PhoneNumber))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                TempData["PhoneNumber"] = user.PhoneNumber;
+                return RedirectToAction(nameof(Index));
+            }
+            return View(user);
+        }
         [HttpGet]
         public IActionResult Login(string Message)
         {
@@ -113,38 +141,7 @@ namespace memeCoinWebApp.Controllers
         // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("PhoneNumber,Password,Balance")] User user)
-        {
-            if (id != user.PhoneNumber)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.PhoneNumber))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
-        }
-
+        
         private bool UserExists(string id)
         {
             return _context.User.Any(e => e.PhoneNumber == id);

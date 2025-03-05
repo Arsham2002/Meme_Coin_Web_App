@@ -7,7 +7,7 @@ public class Fund
 {
     [Key]
     public int Id { set; get; }
-    public int Amount { set; get; }
+    public decimal Amount { set; get; }
     public DateTime Timestamp { set; get; }
 
     // foreign keys

@@ -1,0 +1,64 @@
+@model List<memeCoinWebApp.Models.Fund>
+
+@{
+    ViewData["Title"] = "Fund List";
+}
+
+<form asp-action="Create" class="row align-items-center">
+    <div class="col-auto">
+        <label class="control-label">Amount to fund:</label>
+    </div>
+    <div class="col-auto">
+        <input name="Amount" class="form-control"/>
+    </div>
+    <div class="col-auto">
+        <input type="submit" value="Fund" class="btn btn-primary"/>
+    </div>
+    <div class="col-auto">
+        <a asp-action="Index" asp-controller="Home" asp-route-PhoneNumber="@TempData["PhoneNumber"]" class="btn btn-outline-secondary ml-2">Back</a>
+    </div>
+        <input type="hidden" name="UserPhoneNumber" value="@TempData["PhoneNumber"]"/>
+</form>
+
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Your funds</h2>
+    <form class="d-flex" asp-action="Index" asp-route-phoneNumber="@TempData["PhoneNumber"]">
+        <div class="m-2">
+            <label>Start date</label>
+            <input type="text" class="form-control" name="startDate">
+        </div>
+        <div class="m-2">
+            <label>End date</label>
+            <input type="text" class="form-control" name="endDate">
+        </div>
+        <div class="m-2">
+            <label>Minimum amount</label>
+            <input type="text" class="form-control" name="minAmount">
+        </div>
+        <div class="m-2">
+            <label>Maximum amount</label>
+            <input type="text" class="form-control" name="maxAmount">
+        </div>
+        <button type="submit" class="btn btn-primary h-50 mt-auto mb-2">Apply filter</button>
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Amount</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var fund in Model)
+        {
+            <tr>
+                <td>@fund.Id</td>
+                <td>$@fund.Amount</td>
+                <td>@fund.Timestamp</td>
+            </tr>
+        }
+    </tbody>
+</table>

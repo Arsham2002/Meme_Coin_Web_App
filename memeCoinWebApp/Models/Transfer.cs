@@ -7,13 +7,14 @@ public class Transfer
 {
     [Key]
     public int Id { set; get; }
-    public string Source { set; get; }
-    public string Destination { set; get; }
     public decimal Amount { set; get; }
     public DateTime Timestamp { set; get; }
 
     // foreign keys 
-    [ForeignKey("UserPhoneNumber")]
-    public string UserPhoneNumber { set; get; }
-    public User? User { set; get; }
+    [ForeignKey("Source")]
+    public string Source { set; get; }
+    public User? SourceUser { set; get; }
+    [ForeignKey("Destination")]
+    public string Destination { set; get; }
+    public User? DestinationUser { set; get; }
 }

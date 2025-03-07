@@ -19,34 +19,33 @@ namespace memeCoinWebApp.Controllers
             _context = context;
         }
 
-        // GET: Transfers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? phoneNumber, DateTime? startDate, DateTime? endDate, int? minAmount, int? maxAmount, string? source, string? destination)
         {
-            return View(await _context.Transfer.ToListAsync());
-        }
-
-        // GET: Transfers/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            if (string.IsNullOrEmpty(phoneNumber))
             {
                 return NotFound();
             }
 
-            var transfer = await _context.Transfer
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (transfer == null)
-            {
-                return NotFound();
-            }
+            var transfers = _context.Transfer
+                .Where(t => t.Source == phoneNumber || t.Destination == phoneNumber)
+                .AsQueryable();
 
-            return View(transfer);
-        }
+            if (startDate.HasValue) transfers = transfers.Where(t => t.Timestamp >= startDate.Value);
 
-        // GET: Transfers/Create
-        public IActionResult Create()
-        {
-            return View();
+            if (endDate.HasValue) transfers = transfers.Where(t => t.Timestamp <= endDate.Value);
+
+            if (minAmount.HasValue) transfers = transfers.Where(t => t.Amount >= minAmount.Value);
+
+            if (maxAmount.HasValue) transfers = transfers.Where(t => t.Amount <= maxAmount.Value);
+
+            if (!string.IsNullOrEmpty(source)) transfers = transfers.Where(t => t.Source == source);
+
+            if (!string.IsNullOrEmpty(destination)) transfers = transfers.Where(t => t.Destination == destination);
+
+            var result = await transfers.ToListAsync();
+            if (result == null) return NotFound();
+            TempData["PhoneNumber"] = phoneNumber;
+            return View(result);
         }
 
         // POST: Transfers/Create
@@ -54,15 +53,23 @@ namespace memeCoinWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Source,Destination,Amount,Timestamp,UserId")] Transfer transfer)
+        public async Task<IActionResult> Create([Bind("Id,Source,Destination,Amount,Timestamp")] Transfer model)
         {
+            if (model.Source == model.Destination) return RedirectToAction(nameof(Index), new { phoneNumber = model.Source});
+            var srcUser = await _context.User.FirstOrDefaultAsync(u => u.PhoneNumber == model.Source);
+            var dstUser = await _context.User.FirstOrDefaultAsync(u => u.PhoneNumber == model.Destination);
+            if (srcUser == null || dstUser == null) return RedirectToAction(nameof(Index), new { phoneNumber = model.Source});
+            if (srcUser.Balance < model.Amount) return RedirectToAction(nameof(Index), new { phoneNumber = model.Source});
             if (ModelState.IsValid)
             {
-                _context.Add(transfer);
+                model.Timestamp = DateTime.Now;
+                _context.Add(model);
+                srcUser.Balance -= model.Amount;
+                dstUser.Balance += model.Amount;
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            return View(transfer);
+            TempData["PhoneNumber"] = model.Source;
+            return RedirectToAction(nameof(Index), new { phoneNumber = model.Source });
         }
 
         private bool TransferExists(int id)

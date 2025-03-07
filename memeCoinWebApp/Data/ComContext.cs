@@ -18,5 +18,13 @@ namespace memeCoinWebApp.Data
         public DbSet<memeCoinWebApp.Models.Transfer> Transfer { get; set; } = default!;
         public DbSet<memeCoinWebApp.Models.Fund> Fund { get; set; } = default!;
         public DbSet<memeCoinWebApp.Models.Message> Message { get; set; } = default!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Transfer>()
+                .HasOne(t => t.DestinationUser) // Each Order has one Customer
+                .WithMany(u => u.Transfers) // Each Customer can have many Orders
+                .HasForeignKey(t => t.Destination); // Specify the foreign key
+        }
     }
 }

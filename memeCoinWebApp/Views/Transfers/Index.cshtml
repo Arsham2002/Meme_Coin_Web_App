@@ -4,56 +4,81 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<form asp-action="Create" class="row align-items-center">
+    <div class="col-auto">
+        <label class="control-label">Amount to transfer:</label>
+    </div>
+    <div class="col-auto">
+        <input name="Amount" class="form-control"/>
+    </div>
+    <div class="col-auto">
+        <label class="control-label">Destination:</label>
+    </div>
+    <div class="col-auto">
+        <input name="Destination" class="form-control"/>
+    </div>
+    <div class="col-auto">
+        <input type="submit" value="Transfer" class="btn btn-primary"/>
+    </div>
+    <div class="col-auto">
+        <a asp-action="Index" asp-controller="Home" asp-route-PhoneNumber="@TempData["PhoneNumber"]" class="btn btn-outline-secondary ml-2">Back</a>
+    </div>
+        <input type="hidden" name="Source" value="@TempData["PhoneNumber"]"/>
+</form>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<h1>Your transfers</h1>
+<div class="d-flex justify-content-between align-items-center">
+    <form class="d-flex" asp-action="Index" asp-route-phoneNumber="@TempData["PhoneNumber"]">
+        <div class="m-2">
+            <label>Start date</label>
+            <input type="text" class="form-control" name="startDate">
+        </div>
+        <div class="m-2">
+            <label>End date</label>
+            <input type="text" class="form-control" name="endDate">
+        </div>
+        <div class="m-2">
+            <label>Minimum amount</label>
+            <input type="text" class="form-control" name="minAmount">
+        </div>
+        <div class="m-2">
+            <label>Maximum amount</label>
+            <input type="text" class="form-control" name="maxAmount">
+        </div>
+        <div class="m-2">
+            <label>Source</label>
+            <input type="text" class="form-control" name="source">
+        </div>
+        <div class="m-2">
+            <label>Destination</label>
+            <input type="text" class="form-control" name="destination">
+        </div>
+        <div class="m-2">
+            <button type="submit" class="btn btn-primary">Apply filter</button>
+        </div>
+    </form>
+</div>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Source)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Destination)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Timestamp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserPhoneNumber)
-            </th>
-            <th></th>
+            <th>Id</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Amount</th>
+            <th>Time</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Source)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Destination)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Timestamp)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserPhoneNumber)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var fund in Model)
+        {
+            <tr>
+                <td>@fund.Id</td>
+                <td>@fund.Source</td>
+                <td>@fund.Destination</td>
+                <td>$@fund.Amount</td>
+                <td>@fund.Timestamp</td>
+            </tr>
+        }
     </tbody>
 </table>

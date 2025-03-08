@@ -69,7 +69,7 @@ namespace memeCoinWebApp.Controllers
         // POST: Messages/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string content, string sender, string recipient)
+        public async Task<IActionResult> Create(string content, string sender, string recipient, IFormFile? file)
         {
             Message newMessage = new Message
             {
@@ -79,6 +79,16 @@ namespace memeCoinWebApp.Controllers
                 Timestamp = DateTime.Now,
                 UserPhoneNumber = recipient
             };
+            if (file != null && file.Length > 0)
+            {
+                newMessage.FilePath = Path.GetFileName(file.FileName);
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UploadedFiles", newMessage.FilePath);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                if (content == null) newMessage.Content = "<empty>";
+            }
             _context.Add(newMessage);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Details), new { phoneNumber = sender, senderPhoneNumber = recipient });
@@ -87,6 +97,15 @@ namespace memeCoinWebApp.Controllers
         private bool MessageExists(int id)
         {
             return _context.Message.Any(e => e.Id == id);
+        }
+        
+        [HttpGet]
+        public IActionResult Download(string name)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedFiles", name);
+            if (!System.IO.File.Exists(path)) return NotFound();
+            var fileBytes = System.IO.File.ReadAllBytes(path);
+            return File(fileBytes, "application/octet-stream", name);
         }
     }
 }

@@ -11,6 +11,7 @@ public class Message
     public required string Content { set; get; }
     public bool Seen { set; get; }
     public DateTime Timestamp { set; get; }
+    public string? FilePath { set; get; }
     // foreign keys
     [ForeignKey("UserPhoneNumber")]
     public required string UserPhoneNumber { set; get; }

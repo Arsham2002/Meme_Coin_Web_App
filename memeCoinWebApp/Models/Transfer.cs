@@ -12,9 +12,9 @@ public class Transfer
 
     // foreign keys 
     [ForeignKey("Source")]
-    public string Source { set; get; }
+    public required string Source { set; get; }
     public User? SourceUser { set; get; }
     [ForeignKey("Destination")]
-    public string Destination { set; get; }
+    public required string Destination { set; get; }
     public User? DestinationUser { set; get; }
 }

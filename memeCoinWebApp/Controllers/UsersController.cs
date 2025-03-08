@@ -122,8 +122,8 @@ namespace memeCoinWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string phonenumber, string password)
         {
-            var user = _context.User
-                        .FirstOrDefault(c => c.PhoneNumber == phonenumber && c.Password == password);;
+            var user = await _context.User
+                        .FirstOrDefaultAsync(c => c.PhoneNumber == phonenumber && c.Password == password);;
             if (user != null)
             {
                 TempData["PhoneNumber"] = phonenumber;

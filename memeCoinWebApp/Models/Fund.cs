@@ -12,6 +12,6 @@ public class Fund
 
     // foreign keys
     [ForeignKey("UserPhoneNumber")]
-    public string UserPhoneNumber { set; get; }
+    public required string UserPhoneNumber { set; get; }
     public User? User { set; get; }
 }
